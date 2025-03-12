@@ -22,11 +22,6 @@ export default function Home() {
     }
     
     function Calcular() {
-        const alt = parseFloat(altura)
-        const pes = parseFloat(peso)
-        const ida = parseInt(idade)
-
-        
         function verificarDados(){
             if(isNaN(parseInt(altura))){
                 Alert.alert(
@@ -163,7 +158,7 @@ const esquilos = StyleSheet.create({
         marginRight: 'auto',
         marginTop: 'auto',
         marginBottom: 'auto',
-        height: 480,
+        height: 560,
         width: 700,
 
     },
@@ -171,7 +166,7 @@ const esquilos = StyleSheet.create({
         marginTop: 20,
         textAlign: 'center',
         fontSize: 30,
-        color: '#F7F2FB'
+        color: 'black'
     },
     dados: {
         textAlign: 'center',
