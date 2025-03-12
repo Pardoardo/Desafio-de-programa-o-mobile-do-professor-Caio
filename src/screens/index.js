@@ -1,112 +1,111 @@
 import { useState, React } from "react";
-import { Text, Picker, TouchableOpacity, TextInput, View, SafeAreaView, StyleSheet, Alert } from "react-native";
-
+import { Text, TouchableOpacity, TextInput, View, SafeAreaView, StyleSheet, Alert } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 export default function Home() {
 
-    const [ idade, setIdade ] = useState();
-    const [ peso, setPeso ] = useState();
-    const [ altura, setAltura ] = useState();
-    const [ sexo, setSexo ] = useState();
-    const [ nivel, setNivel ] = useState();
+    const [idade, setIdade] = useState();
+    const [peso, setPeso] = useState();
+    const [altura, setAltura] = useState();
+    const [sexo, setSexo] = useState();
+    const [nivel, setNivel] = useState();
 
-    const setarValorSexo = (evento) => {
-        setSexo(evento.target.value)
-        console.log("novo sexo definido: " + evento.target.value)
+    const setarValorSexo = (valor) => {
+        setSexo(valor)
+        console.log("novo sexo definido: " + valor)
         console.log("novo " + sexo)
     }
 
-    const setarValorNivel = (evento) => {
-        setNivel(evento.target.value)
-        console.log("novo nivel definido: " + evento.target.value)
+    const setarValorNivel = (valor) => {
+        setNivel(valor)
+        console.log("novo nivel definido: " + valor)
         console.log("novo " + nivel)
     }
-    
+
+    function calcularIMC() {
+        let tmb
+        if (sexo === 'm') {
+            tmb = (10 * parseFloat(peso)) + (6.25 * parseFloat(altura)) - (5 * parseInt(idade) + 5)
+        } else {
+            tmb = (10 * parseFloat(peso)) + (6.25 * parseFloat(altura)) - (5 * parseInt(idade)) - 161
+        }
+
+        let gastoFinal
+
+        switch (nivel) {
+            case 'sedentario':
+                gastoFinal = tmb * 1.2
+                break;
+            case 'leve':
+                gastoFinal = tmb * 1.375
+                break;
+            case 'moderado':
+                gastoFinal = tmb * 1.55
+                break;
+            case 'intenso':
+                gastoFinal = tmb * 1.725
+                break;
+            case 'muitoIntenso':
+                gastoFinal = tmb * 1.9
+                break;
+        }
+
+        Alert.alert(
+            'Resultado',
+            `Seu gasto calórico total é de ${gastoFinal} calorias.`,
+            [{ text: 'Ok' }],
+            { cancelable: true }
+        )
+        return
+    }
+
     function Calcular() {
-        function verificarDados(){
-            if(isNaN(parseInt(altura))){
+        function verificarDados() {
+            if (isNaN(parseInt(altura))) {
                 Alert.alert(
                     'Informações Inválidas',
                     'A altura digitada não é válida!',
                     [{ text: 'Ok' }],
                     { cancelable: true }
                 )
-                alert('A altura digitada não é válida!')
                 return
             }
 
-            if(isNaN(parseInt(peso))){
+            if (isNaN(parseInt(peso))) {
                 Alert.alert(
                     'Informações Inválidas',
                     'A peso digitado não é válido!',
                     [{ text: 'Ok' }],
                     { cancelable: true }
                 )
-                alert('A peso digitado não é válido!')
                 return
             }
 
-            if(isNaN(parseInt(idade))){
+            if (isNaN(parseInt(idade))) {
                 Alert.alert(
                     'Informações Inválidas',
                     'A idade digitada não é válida!',
                     [{ text: 'Ok' }],
                     { cancelable: true }
                 )
-                alert('A idade digitada não é válida!')
                 return
             }
+
+            calcularIMC()
         }
 
-        function calcularIMC(){
-            let tmb
-            if(sexo === 'm'){
-                tmb = (10 * parseFloat(peso)) + (6.25 * parseFloat(altura)) - (5 * parseInt(idade) + 5)
-            } else {
-                tmb = (10 * parseFloat(peso)) + (6.25 * parseFloat(altura)) - (5 * parseInt(idade)) - 161
-            }
-
-            let gastoFinal 
-
-            switch (nivel) {
-                case 'sedentario':
-                   gastoFinal = tmb * 1.2 
-                break;
-                case 'leve':
-                   gastoFinal = tmb * 1.375 
-                break;
-                case 'moderado':
-                   gastoFinal = tmb * 1.55 
-                break;
-                case 'intenso':
-                   gastoFinal = tmb * 1.725
-                break;
-                case 'muitoIntenso':
-                   gastoFinal = tmb * 1.9 
-                break;
-            }
-
-            Alert.alert(
-                'Resultado',
-                `Seu gasto calórico total é de ${gastoFinal}`,
-                [{ text: 'Ok' }],
-                { cancelable: true }
-            )
-            alert(`Seu gasto calórico total é de ${gastoFinal}`)
-            return
-        }
+        
 
         function verificarPreenchimento() {
             if (!idade == '' && !peso == '' && !altura == '' && !sexo == '' && !nivel == '') {
                 verificarDados()
-                calcularIMC()    
+                
             } else {
                 Alert.alert(
                     'Informações faltando',
-                    'Você não prencheeu todas as lacunas necessárias!',
+                    'Você não prencheeu todas as lacunas necessárias!' + sexo,
                     [{ text: 'Ok' }],
                     { cancelable: true }
                 )
-                alert('Você não prencheeu todas as lacunas necessárias!')
                 console.log(altura, idade, peso, sexo)
                 return;
             }
@@ -126,13 +125,18 @@ export default function Home() {
                     <TextInput style={esquilos.caixa_informacao} placeholder="Insira Peso" onChangeText={setPeso} />
                     <TextInput style={esquilos.caixa_informacao} placeholder="Insitra Altura" onChangeText={setAltura} />
 
-                    <Picker style={esquilos.caixa_informacao} onChange={setarValorSexo}>
+                    <Picker style={esquilos.caixa_informacao} onValueChange={(valor) => {
+                        setarValorSexo(valor)
+                    }
+                    }>
                         <Picker.Item label="Selecione sexo" value={undefined} />
                         <Picker.Item label="Masculino" value='m' />
                         <Picker.Item label="Feminino" value='f' />
                     </Picker>
 
-                    <Picker style={esquilos.caixa_informacao} onChange={setarValorNivel}>
+                    <Picker style={esquilos.caixa_informacao} onValueChange={(valro) => {
+                        setarValorNivel(valro)
+                    }}>
                         <Picker.Item label="Selecione um nível de atividade física" value={undefined} />
                         <Picker.Item label="Sedentário" value='sedentario' />
                         <Picker.Item label="Leve" value='leve' />
@@ -159,7 +163,7 @@ const esquilos = StyleSheet.create({
         marginTop: 'auto',
         marginBottom: 'auto',
         height: 560,
-        width: 700,
+        width: 400,
 
     },
     titulo: {
@@ -176,7 +180,7 @@ const esquilos = StyleSheet.create({
         padding: 10,
         marginTop: 5,
         borderRadius: 10,
-        width: 500,
+        width: 200,
         marginLeft: 102,
         backgroundColor: '#4D69BD',
         borderColor: '#070F25',
