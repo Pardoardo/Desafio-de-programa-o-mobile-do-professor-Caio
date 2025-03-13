@@ -157,13 +157,11 @@ export default function Home() {
 const esquilos = StyleSheet.create({
     container: {
         backgroundColor: '#C8E3FC',
-        borderRadius: 20,
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: 'auto',
         marginBottom: 'auto',
-        height: 560,
-        width: 400,
+        flex:1
 
     },
     titulo: {
